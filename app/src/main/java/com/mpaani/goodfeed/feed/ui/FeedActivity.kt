@@ -1,4 +1,4 @@
-package com.mpaani.goodfeed.feed
+package com.mpaani.goodfeed.feed.ui
 
 import com.mpaani.goodfeed.R
 import com.mpaani.goodfeed.core.ui.BaseActivity
