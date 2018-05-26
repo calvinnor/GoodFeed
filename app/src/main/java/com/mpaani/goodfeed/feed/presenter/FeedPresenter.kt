@@ -149,7 +149,7 @@ class FeedPresenter(feedViewContract: FeedViewContract) : FeedPresenterContract 
     fun convertToViewModels() {
         if (postItems.isEmpty() || userList.isEmpty()) return
 
-        val feedViewModels = getFeedViewModels(postItems, userList)
+        val feedViewModels = getFeedViewModels(appContext, postItems, userList)
         feedView()?.onFeedItemsReceived(feedViewModels)
     }
 

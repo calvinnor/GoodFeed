@@ -130,9 +130,9 @@ class PostPresenter(postViewContract: PostViewContract,
     private fun getCommentsForThisPost(commentsList: List<Comment>) = commentsList.filter { it.postId == postId }
 
     private fun convertToPostViewModel() {
-        if (userModel == null || postModel == null) return
+        if (postModel == null) return
 
-        val postViewModel = getPostViewModel(userModel!!, postModel!!)
+        val postViewModel = getPostViewModel(appContext, userModel, postModel!!)
         postView()?.onPostReceived(postViewModel)
     }
 
