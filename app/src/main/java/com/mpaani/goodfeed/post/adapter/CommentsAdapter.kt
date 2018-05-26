@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.mpaani.goodfeed.R
+import com.mpaani.goodfeed.core.extension.loadAvatar
 import com.mpaani.goodfeed.post.viewmodel.CommentViewModel
 import kotlinx.android.synthetic.main.view_comment_item.view.*
 import java.util.*
@@ -33,10 +34,12 @@ class CommentsAdapter : RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>(
 
     class CommentViewHolder(private val rootView: View) : RecyclerView.ViewHolder(rootView) {
 
+        private val commentUserImage = rootView.comment_user_image
         private val commentAuthorName = rootView.comment_user_name
         private val commentBody = rootView.comment_body
 
         fun bind(commentItem: CommentViewModel) {
+            commentUserImage.loadAvatar(commentItem.commentEmail)
             commentAuthorName.text = commentItem.commentName
             commentBody.text = commentItem.commentBody
         }

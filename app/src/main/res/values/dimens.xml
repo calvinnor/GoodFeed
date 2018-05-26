@@ -5,8 +5,12 @@
     <dimen name="feed_image_size">75dp</dimen>
     <dimen name="feed_profile_spacing">3dp</dimen>
     <dimen name="feed_content_padding">10dp</dimen>
-    <dimen name="feed_item_large_spacing">10dp</dimen>
     <dimen name="feed_item_small_spacing">5dp</dimen>
+
+    <!-- Post & Comments -->
+    <dimen name="comment_container_spacing">10dp</dimen>
+    <dimen name="comment_user_image_size">60dp</dimen>
+    <dimen name="comment_content_spacing">5dp</dimen>
 
     <!-- Text Sizes -->
     <dimen name="text_size_small">12sp</dimen>
