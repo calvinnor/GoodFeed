@@ -1,6 +1,7 @@
 package com.mpaani.goodfeed.feed.presenter
 
 import android.content.Context
+import android.support.annotation.VisibleForTesting
 import com.mpaani.goodfeed.R
 import com.mpaani.goodfeed.core.data.ApiProxy
 import com.mpaani.goodfeed.core.data.model.Post
@@ -25,7 +26,7 @@ import javax.inject.Inject
  * Presenter logic for Feeds.
  * This class internally handles API access, DB access and presenting to the UI.
  */
-class FeedPresenter(feedViewContract: FeedViewContract) : FeedPresenterContract {
+class FeedPresenter : FeedPresenterContract {
 
     @Inject
     protected lateinit var apiProxy: ApiProxy
@@ -36,16 +37,29 @@ class FeedPresenter(feedViewContract: FeedViewContract) : FeedPresenterContract 
     @Inject
     protected lateinit var appContext: Context
 
-    private val feedView: WeakReference<FeedViewContract>
+    private lateinit var feedView: WeakReference<FeedViewContract>
     private val postItems: MutableList<Post> = ArrayList()
     private val userList: MutableList<User> = ArrayList()
 
     private var fetchFromServerComplete = false
 
-    init {
+    constructor(feedViewContract: FeedViewContract) {
         dependencyComponent.inject(this)
         feedView = WeakReference<FeedViewContract>(feedViewContract)
+        Events.subscribe(this)
+    }
 
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    constructor(feedViewContract: FeedViewContract,
+                apiProxy: ApiProxy,
+                dataProxy: DataProxy,
+                appContext: Context) {
+
+        this.apiProxy = apiProxy
+        this.dataProxy = dataProxy
+        this.appContext = appContext
+
+        feedView = WeakReference<FeedViewContract>(feedViewContract)
         Events.subscribe(this)
     }
 

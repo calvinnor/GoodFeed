@@ -1,6 +1,7 @@
 package com.mpaani.goodfeed.post.presenter
 
 import android.content.Context
+import android.support.annotation.VisibleForTesting
 import com.mpaani.goodfeed.R
 import com.mpaani.goodfeed.core.data.ApiProxy
 import com.mpaani.goodfeed.core.data.model.Comment
@@ -28,9 +29,7 @@ import javax.inject.Inject
  * Presenter logic for Posts.
  * This class internally handles API access, DB access and presenting to the UI.
  */
-class PostPresenter(postViewContract: PostViewContract,
-                    private val postId: Int,
-                    private val userEmail: String) : PostPresenterContract {
+class PostPresenter : PostPresenterContract {
 
     @Inject
     protected lateinit var apiProxy: ApiProxy
@@ -41,16 +40,44 @@ class PostPresenter(postViewContract: PostViewContract,
     @Inject
     protected lateinit var appContext: Context
 
-    private val postView: WeakReference<PostViewContract>
+    private lateinit var postView: WeakReference<PostViewContract>
     private var userModel: User? = null
     private var postModel: Post? = null
     private var commentsList: MutableList<Comment> = ArrayList()
 
+    private var postId: Int = 0
+    private var userEmail: String = ""
+
     private var fetchFromServerComplete = false
 
-    init {
+    private constructor(postId: Int, userEmail: String) {
+        this.postId = postId
+        this.userEmail = userEmail
+    }
+
+    constructor(postViewContract: PostViewContract,
+                postId: Int,
+                userEmail: String) : this(postId, userEmail) {
+
         dependencyComponent.inject(this)
         postView = WeakReference<PostViewContract>(postViewContract)
+
+        Events.subscribe(this)
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    constructor(feedViewContract: PostViewContract,
+                postId: Int,
+                userEmail: String,
+                apiProxy: ApiProxy,
+                dataProxy: DataProxy,
+                appContext: Context) : this(postId, userEmail) {
+
+        postView = WeakReference<PostViewContract>(feedViewContract)
+
+        this.apiProxy = apiProxy
+        this.dataProxy = dataProxy
+        this.appContext = appContext
 
         Events.subscribe(this)
     }
