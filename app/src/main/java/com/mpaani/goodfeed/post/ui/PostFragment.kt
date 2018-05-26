@@ -74,6 +74,7 @@ class PostFragment : BaseFragment(), PostViewContract {
 
     override fun onCommentsReceived(commentViewModels: List<CommentViewModel>) {
         post_comments_header.setVisible()
+        post_comments_header.text = getString(R.string.post_comments_header, commentViewModels.size)
         commentsAdapter.setItems(commentViewModels)
         scrollToSavedPosition()
     }

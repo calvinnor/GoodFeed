@@ -10,7 +10,7 @@
 
     <!-- Post -->
     <string name="post_toolbar_title">%1$s\'s Post</string>
-    <string name="post_comments_header">Comments</string>
+    <string name="post_comments_header">%1$d Comments</string>
 
     <!-- Feed Errors -->
     <string name="feed_cannot_fetch_api">Could not load data from server.\nPlease try again.</string>

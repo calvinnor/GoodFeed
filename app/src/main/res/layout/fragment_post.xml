@@ -30,7 +30,6 @@
             android:drawableEnd="@drawable/ic_arrow_down"
             android:gravity="center_vertical"
             android:padding="@dimen/feed_item_large_spacing"
-            android:text="@string/post_comments_header"
             android:textStyle="bold"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
