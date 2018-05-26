@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
 import com.mpaani.goodfeed.R
+import com.mpaani.goodfeed.core.extension.loadAvatar
 import com.mpaani.goodfeed.core.extension.setVisible
 import com.mpaani.goodfeed.core.ui.BaseFragment
 import com.mpaani.goodfeed.post.PostPresenterContract
@@ -22,6 +23,8 @@ class PostFragment : BaseFragment(), PostViewContract {
 
     companion object {
         const val TAG = "PostFragment"
+
+        private const val POST_SCROLL_STATE = "post_scroll_state"
     }
 
     override val fragmentTag = TAG
@@ -29,6 +32,8 @@ class PostFragment : BaseFragment(), PostViewContract {
 
     private lateinit var postPresenter: PostPresenterContract
     private val commentsAdapter = CommentsAdapter()
+
+    private var postScrollState: Int = 0
 
     /**
      * Set this fragment's presenter.
@@ -44,13 +49,23 @@ class PostFragment : BaseFragment(), PostViewContract {
         fetchData()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(POST_SCROLL_STATE, post_root_scrollview.scrollY)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        postScrollState = savedInstanceState.getInt(POST_SCROLL_STATE)
+    }
+
     override fun onStop() {
         postPresenter.onExit()
         super.onStop()
     }
 
     override fun onPostReceived(postViewModel: PostViewModel) {
-        feed_item_profile_image.setImageResource(R.drawable.ic_account) // TODO: Temporary
+        feed_item_profile_image.loadAvatar(postViewModel.userEmail)
         feed_item_profile_name.text = postViewModel.postAuthor
         feed_item_profile_company.text = postViewModel.postAuthorCompany
         feed_item_title.text = postViewModel.postTitle
@@ -60,6 +75,7 @@ class PostFragment : BaseFragment(), PostViewContract {
     override fun onCommentsReceived(commentViewModels: List<CommentViewModel>) {
         post_comments_header.setVisible()
         commentsAdapter.setItems(commentViewModels)
+        scrollToSavedPosition()
     }
 
     override fun onError(reason: String) {
@@ -76,6 +92,10 @@ class PostFragment : BaseFragment(), PostViewContract {
     private fun fetchData() {
         postPresenter.fetchPost()
         postPresenter.fetchComments()
+    }
+
+    private fun scrollToSavedPosition() {
+        post_root_scrollview.scrollY = postScrollState
     }
 
     private fun initialiseViews() {

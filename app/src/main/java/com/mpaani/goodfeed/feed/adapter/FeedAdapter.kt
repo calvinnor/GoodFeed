@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.mpaani.goodfeed.R
+import com.mpaani.goodfeed.core.extension.loadAvatar
 import com.mpaani.goodfeed.feed.viewmodel.FeedViewModel
 import kotlinx.android.synthetic.main.view_feed_item.view.*
 import java.util.*
@@ -29,7 +30,8 @@ class FeedAdapter(private val feedListener: FeedListener) : RecyclerView.Adapter
 
     override fun getItemCount() = feedList.size
 
-    override fun onBindViewHolder(holder: FeedViewHolder, position: Int) = holder.bind(feedList[position], feedListener)
+    override fun onBindViewHolder(holder: FeedViewHolder, position: Int) =
+            holder.bind(feedList[position], feedListener)
 
     class FeedViewHolder(private val rootView: View) : RecyclerView.ViewHolder(rootView) {
 
@@ -41,7 +43,7 @@ class FeedAdapter(private val feedListener: FeedListener) : RecyclerView.Adapter
         private val postDescription = rootView.feed_item_desc
 
         fun bind(feedItem: FeedViewModel, feedListener: FeedListener) {
-            postAuthorImage.setImageResource(R.drawable.ic_account) // TODO: Temporary
+            postAuthorImage.loadAvatar(feedItem.userEmail)
             postAuthorName.text = feedItem.postAuthor
             postAuthorCompany.text = feedItem.postAuthorCompany
             postTitle.text = feedItem.postTitle

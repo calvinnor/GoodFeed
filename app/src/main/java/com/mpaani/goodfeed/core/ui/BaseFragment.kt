@@ -26,6 +26,7 @@ abstract class BaseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(menu != NO_LAYOUT)
+        if (savedInstanceState != null) onRestoreInstanceState(savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -50,6 +51,11 @@ abstract class BaseFragment : Fragment() {
      * This will be used in Fragment Transactions.
      */
     abstract val fragmentTag: String
+
+    /**
+     * Override this method to get Saved State after onViewCreated()
+     */
+    open fun onRestoreInstanceState(savedInstanceState: Bundle) {}
 
     private fun getInflatedView(inflater: LayoutInflater): View? {
         val activityLayout = layout

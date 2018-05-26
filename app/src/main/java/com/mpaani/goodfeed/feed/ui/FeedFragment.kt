@@ -1,6 +1,7 @@
 package com.mpaani.goodfeed.feed.ui
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
@@ -17,6 +18,8 @@ class FeedFragment : BaseFragment(), FeedViewContract, FeedAdapter.FeedListener 
 
     companion object {
         const val TAG = "FeedFragment"
+
+        private const val FEED_RECYCLER_SAVED_STATE = "feed_saved_state"
     }
 
     override val fragmentTag = TAG
@@ -24,6 +27,8 @@ class FeedFragment : BaseFragment(), FeedViewContract, FeedAdapter.FeedListener 
 
     private lateinit var feedPresenter: FeedPresenterContract
     private val feedAdapter = FeedAdapter(this)
+
+    private var recyclerSavedState: Parcelable? = null
 
     /**
      * Set this fragment's presenter.
@@ -43,12 +48,23 @@ class FeedFragment : BaseFragment(), FeedViewContract, FeedAdapter.FeedListener 
         super.onStop()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(FEED_RECYCLER_SAVED_STATE, feed_recyclerview.layoutManager.onSaveInstanceState())
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        recyclerSavedState = savedInstanceState.getParcelable(FEED_RECYCLER_SAVED_STATE)
+    }
+
     override fun onFeedItemClicked(feedViewModel: FeedViewModel) {
         postClicked(feedViewModel)
     }
 
     override fun onFeedItemsReceived(feedModels: List<FeedViewModel>) {
         feedAdapter.setItems(feedModels)
+        recyclerSavedState?.let { feed_recyclerview.layoutManager.onRestoreInstanceState(recyclerSavedState) }
     }
 
     override fun onNavigateToPost(postId: Int, userName: String, userEmail: String) {

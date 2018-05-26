@@ -16,6 +16,7 @@ import com.mpaani.goodfeed.feed.event.UsersEvent
 import com.mpaani.goodfeed.feed.transformer.getFeedViewModels
 import com.mpaani.goodfeed.feed.viewmodel.FeedViewModel
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -142,7 +143,7 @@ class FeedPresenter : FeedPresenterContract {
         }
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onUsersReceived(usersEvent: UsersEvent) {
         Events.removeSticky(usersEvent)
         if (fetchFromServerComplete) return
@@ -151,7 +152,7 @@ class FeedPresenter : FeedPresenterContract {
         convertToViewModels()
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onPostsReceived(postsEvent: PostsEvent) {
         Events.removeSticky(postsEvent)
         if (fetchFromServerComplete) return

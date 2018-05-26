@@ -18,6 +18,7 @@ import com.mpaani.goodfeed.post.event.UserEvent
 import com.mpaani.goodfeed.post.transformer.getCommentsViewModels
 import com.mpaani.goodfeed.post.transformer.getPostViewModel
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,6 +50,7 @@ class PostPresenter : PostPresenterContract {
     private var userEmail: String = ""
 
     private var fetchFromServerComplete = false
+    private var fetchedUser = false
 
     private constructor(postId: Int, userEmail: String) {
         this.postId = postId
@@ -131,21 +133,22 @@ class PostPresenter : PostPresenterContract {
         }
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onUserReceived(userEvent: UserEvent) {
+        fetchedUser = true
         Events.removeSticky(userEvent)
         userModel = userEvent.user
         convertToPostViewModel()
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onPostReceived(postEvent: PostEvent) {
         Events.removeSticky(postEvent)
         postModel = postEvent.post
         convertToPostViewModel()
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun onCommentsReceived(commentsEvent: CommentsEvent) {
         if (fetchFromServerComplete) return
 
@@ -157,7 +160,7 @@ class PostPresenter : PostPresenterContract {
     private fun getCommentsForThisPost(commentsList: List<Comment>) = commentsList.filter { it.postId == postId }
 
     private fun convertToPostViewModel() {
-        if (postModel == null) return
+        if (postModel == null || !fetchedUser) return
 
         val postViewModel = getPostViewModel(appContext, userModel, postModel!!)
         postView()?.onPostReceived(postViewModel)

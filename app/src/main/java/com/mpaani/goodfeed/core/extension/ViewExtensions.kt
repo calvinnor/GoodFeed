@@ -3,6 +3,8 @@
 package com.mpaani.goodfeed.core.extension
 
 import android.view.View
+import android.widget.ImageView
+import com.mpaani.goodfeed.core.util.ImageLoader
 
 /**
  * Show a View.
@@ -24,3 +26,8 @@ fun View.setGone() {
 fun View.setInvisible() {
     this.visibility = View.INVISIBLE
 }
+
+/**
+ * Specific function for loading a user's avatar.
+ */
+fun ImageView.loadAvatar(userEmail: String) = ImageLoader.loadUserImage(this, userEmail)

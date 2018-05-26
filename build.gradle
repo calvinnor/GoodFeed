@@ -12,6 +12,7 @@ buildscript {
     ext.mockitoVersion = '2.8.9'
     ext.jUnitVersion = '4.12'
     ext.constraintLayoutVersion = '1.1.0'
+    ext.glideVersion = '4.7.1'
 
     repositories {
         google()
