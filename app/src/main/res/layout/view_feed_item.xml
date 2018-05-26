@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/feed_item_small_spacing">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/feed_item_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/feed_item_profile_image"
+            android:layout_width="@dimen/feed_image_size"
+            android:layout_height="@dimen/feed_image_size"
+            android:padding="@dimen/feed_content_padding"
+            tools:src="@drawable/ic_account" />
+
+        <TextView
+            android:id="@+id/feed_item_profile_name"
+            style="@style/TextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="@integer/feed_name_max_lines"
+            android:padding="@dimen/feed_profile_spacing"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/feed_item_profile_company"
+            app:layout_constraintLeft_toRightOf="@id/feed_item_profile_image"
+            app:layout_constraintTop_toTopOf="@id/feed_item_profile_image"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Some User" />
+
+        <TextView
+            android:id="@+id/feed_item_profile_company"
+            style="@style/TextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="@integer/feed_company_name_max_lines"
+            android:padding="@dimen/feed_profile_spacing"
+            app:layout_constraintBottom_toBottomOf="@id/feed_item_profile_image"
+            app:layout_constraintLeft_toRightOf="@id/feed_item_profile_image"
+            app:layout_constraintTop_toBottomOf="@+id/feed_item_profile_name"
+            tools:text="Brilliant Company Inc" />
+
+        <TextView
+            android:id="@+id/feed_item_title"
+            style="@style/TextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:maxLines="@integer/feed_title_max_lines"
+            android:padding="@dimen/feed_content_padding"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/feed_item_profile_image"
+            tools:text="This is a title" />
+
+        <TextView
+            android:id="@+id/feed_item_desc"
+            style="@style/TextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="@integer/feed_desc_max_lines"
+            android:paddingBottom="@dimen/feed_content_padding"
+            android:paddingEnd="@dimen/feed_content_padding"
+            android:paddingStart="@dimen/feed_content_padding"
+            android:paddingTop="0dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/feed_item_title"
+            tools:text="This is some really long description hoping that the ellipsize will kick in and avoid a really long post. This ellipside should kick in at some time now" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

@@ -2,15 +2,32 @@ package com.mpaani.goodfeed.feed.ui
 
 import com.mpaani.goodfeed.R
 import com.mpaani.goodfeed.core.ui.BaseActivity
+import com.mpaani.goodfeed.core.ui.BaseFragment
+import com.mpaani.goodfeed.feed.presenter.FeedPresenter
 
 class FeedActivity : BaseActivity() {
 
     override val contentLayout = R.layout.activity_feed
     override val fragmentContainer = R.id.main_fragment_container
-    override val fragment: FeedFragment? = null
+    override var fragment: BaseFragment? = null
         get() {
+            // General case
             if (field != null) return field
-            val fromFragmentManager = supportFragmentManager.findFragmentByTag(FeedFragment.TAG)
-            return if (fromFragmentManager == null) FeedFragment() else fromFragmentManager as FeedFragment
+
+            // On Activity destroy in background, Fragment is automatically created and attached
+            var feedFragment = supportFragmentManager.findFragmentByTag(FeedFragment.TAG)
+
+            if (feedFragment == null) feedFragment = FeedFragment()
+            else feedFragment = feedFragment as FeedFragment
+
+            field = feedFragment
+            return field
         }
+
+    override fun setupFragment(fragment: BaseFragment) {
+        val feedFragment = fragment as FeedFragment
+        feedFragment.setFeedPresenter(FeedPresenter(feedFragment))
+    }
+
+    override fun getToolbarTitle() = getString(R.string.feed_toolbar_title)
 }

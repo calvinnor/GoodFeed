@@ -1,5 +1,10 @@
 package com.mpaani.goodfeed.core.data.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,6 +15,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.mpaani.goodfeed.core.db.Constants.POST_BODY;
+import static com.mpaani.goodfeed.core.db.Constants.POST_ID;
+import static com.mpaani.goodfeed.core.db.Constants.POST_TABLE_NAME;
+import static com.mpaani.goodfeed.core.db.Constants.POST_TITLE;
+import static com.mpaani.goodfeed.core.db.Constants.POST_USER_ID;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "userId",
@@ -17,16 +28,27 @@ import java.util.Map;
         "title",
         "body"
 })
+@Entity(tableName = POST_TABLE_NAME)
 public class Post {
 
+    @ColumnInfo(name = POST_USER_ID)
     @JsonProperty("userId")
     private Integer userId;
+
+    @PrimaryKey
+    @ColumnInfo(name = POST_ID)
     @JsonProperty("id")
     private Integer id;
+
+    @ColumnInfo(name = POST_TITLE)
     @JsonProperty("title")
     private String title;
+
+    @ColumnInfo(name = POST_BODY)
     @JsonProperty("body")
     private String body;
+
+    @Ignore
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -80,4 +102,8 @@ public class Post {
         this.additionalProperties.put(name, value);
     }
 
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }

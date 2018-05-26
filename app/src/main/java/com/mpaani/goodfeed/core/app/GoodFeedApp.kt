@@ -2,6 +2,7 @@ package com.mpaani.goodfeed.core.app
 
 import android.app.Application
 import android.content.Context
+import com.mpaani.goodfeed.core.db.GoodFeedDatabase
 import com.mpaani.goodfeed.core.injection.initialise
 
 /**
@@ -19,9 +20,14 @@ class GoodFeedApp : Application() {
         super.onCreate()
         appContext = applicationContext
         initDagger()
+        initDatabase()
     }
 
     private fun initDagger() {
         initialise()
+    }
+
+    private fun initDatabase() {
+        GoodFeedDatabase.init(this)
     }
 }

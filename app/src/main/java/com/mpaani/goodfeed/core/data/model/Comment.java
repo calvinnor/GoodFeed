@@ -1,5 +1,10 @@
 package com.mpaani.goodfeed.core.data.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,6 +15,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.mpaani.goodfeed.core.db.Constants.COMMENT_BODY;
+import static com.mpaani.goodfeed.core.db.Constants.COMMENT_EMAIL;
+import static com.mpaani.goodfeed.core.db.Constants.COMMENT_ID;
+import static com.mpaani.goodfeed.core.db.Constants.COMMENT_NAME;
+import static com.mpaani.goodfeed.core.db.Constants.COMMENT_POST_ID;
+import static com.mpaani.goodfeed.core.db.Constants.COMMENT_TABLE_NAME;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "postId",
@@ -18,18 +30,31 @@ import java.util.Map;
         "email",
         "body"
 })
+@Entity(tableName = COMMENT_TABLE_NAME)
 public class Comment {
 
+    @ColumnInfo(name = COMMENT_POST_ID)
     @JsonProperty("postId")
     private Integer postId;
+
+    @PrimaryKey
+    @ColumnInfo(name = COMMENT_ID)
     @JsonProperty("id")
     private Integer id;
+
+    @ColumnInfo(name = COMMENT_NAME)
     @JsonProperty("name")
     private String name;
+
+    @ColumnInfo(name = COMMENT_EMAIL)
     @JsonProperty("email")
     private String email;
+
+    @ColumnInfo(name = COMMENT_BODY)
     @JsonProperty("body")
     private String body;
+
+    @Ignore
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -91,5 +116,10 @@ public class Comment {
     @JsonAnySetter
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

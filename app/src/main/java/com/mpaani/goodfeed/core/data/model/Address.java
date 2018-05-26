@@ -1,5 +1,9 @@
 package com.mpaani.goodfeed.core.data.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Ignore;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,6 +13,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.mpaani.goodfeed.core.db.Constants.USER_ADDRESS_CITY;
+import static com.mpaani.goodfeed.core.db.Constants.USER_ADDRESS_STREET;
+import static com.mpaani.goodfeed.core.db.Constants.USER_ADDRESS_SUITE;
+import static com.mpaani.goodfeed.core.db.Constants.USER_ADDRESS_ZIPCODE;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -20,16 +29,27 @@ import java.util.Map;
 })
 public class Address {
 
+    @ColumnInfo(name = USER_ADDRESS_STREET)
     @JsonProperty("street")
     private String street;
+
+    @ColumnInfo(name = USER_ADDRESS_SUITE)
     @JsonProperty("suite")
     private String suite;
+
+    @ColumnInfo(name = USER_ADDRESS_CITY)
     @JsonProperty("city")
     private String city;
+
+    @ColumnInfo(name = USER_ADDRESS_ZIPCODE)
     @JsonProperty("zipcode")
     private String zipcode;
+
+    @Embedded
     @JsonProperty("geo")
     private Geo geo;
+
+    @Ignore
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 

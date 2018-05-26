@@ -1,5 +1,12 @@
 package com.mpaani.goodfeed.core.data.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,6 +16,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.mpaani.goodfeed.core.db.Constants.USER_EMAIL;
+import static com.mpaani.goodfeed.core.db.Constants.USER_ID;
+import static com.mpaani.goodfeed.core.db.Constants.USER_PHONE;
+import static com.mpaani.goodfeed.core.db.Constants.USER_SIMPLE_NAME;
+import static com.mpaani.goodfeed.core.db.Constants.USER_TABLE_NAME;
+import static com.mpaani.goodfeed.core.db.Constants.USER_USERNAME;
+import static com.mpaani.goodfeed.core.db.Constants.USER_WEBSITE;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -21,24 +36,44 @@ import java.util.Map;
         "website",
         "company"
 })
+@Entity(tableName = USER_TABLE_NAME)
 public class User {
 
+    @ColumnInfo(name = USER_ID)
     @JsonProperty("id")
     private Integer id;
+
+    @ColumnInfo(name = USER_SIMPLE_NAME)
     @JsonProperty("name")
     private String name;
+
+    @ColumnInfo(name = USER_USERNAME)
     @JsonProperty("username")
     private String username;
+
+    @PrimaryKey
+    @ColumnInfo(name = USER_EMAIL)
     @JsonProperty("email")
-    private String email;
+    @NonNull
+    private String email = "";
+
+    @Embedded
     @JsonProperty("address")
     private Address address;
+
+    @ColumnInfo(name = USER_PHONE)
     @JsonProperty("phone")
     private String phone;
+
+    @ColumnInfo(name = USER_WEBSITE)
     @JsonProperty("website")
     private String website;
+
+    @Embedded
     @JsonProperty("company")
     private Company company;
+
+    @Ignore
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -72,13 +107,14 @@ public class User {
         this.username = username;
     }
 
+    @NonNull
     @JsonProperty("email")
     public String getEmail() {
         return email;
     }
 
     @JsonProperty("email")
-    public void setEmail(String email) {
+    public void setEmail(@NonNull String email) {
         this.email = email;
     }
 

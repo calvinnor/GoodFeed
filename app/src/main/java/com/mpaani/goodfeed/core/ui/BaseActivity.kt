@@ -23,9 +23,14 @@ abstract class BaseActivity : AppCompatActivity() {
         setupLayout()
         setupToolbar()
 
-        // Setup the root fragment only on first launch
-        if (savedInstanceState != null) return
-        setupFragment()
+        // Add the root fragment only on first launch
+        if (savedInstanceState == null) {
+            addRootFragment()
+        }
+
+        this.fragment?.let {
+            setupFragment(it)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -60,7 +65,7 @@ abstract class BaseActivity : AppCompatActivity() {
      *
      * @return The BaseFragment instance to inflate.
      */
-    protected open val fragment: BaseFragment? = null
+    protected open var fragment: BaseFragment? = null
 
     /**
      * Override this value to provide the fragment container ID.
@@ -85,12 +90,20 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private fun setupToolbar() {
         setSupportActionBar(activity_toolbar)
+        title = getToolbarTitle()
     }
 
-    private fun setupFragment() {
+    private fun addRootFragment() {
         if (contentLayout == NO_LAYOUT) return
         val fragment = fragment ?: return
 
         replaceFragment(fragmentContainer, fragment, false)
     }
+
+    protected abstract fun getToolbarTitle(): String
+
+    /**
+     * Override this method to configure a Fragment after add.
+     */
+    protected open fun setupFragment(fragment: BaseFragment) {}
 }

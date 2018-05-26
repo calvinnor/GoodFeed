@@ -1,5 +1,8 @@
 package com.mpaani.goodfeed.core.data.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Ignore;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,6 +13,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.mpaani.goodfeed.core.db.Constants.USER_COMPANY_BS;
+import static com.mpaani.goodfeed.core.db.Constants.USER_COMPANY_CATCHPHRASE;
+import static com.mpaani.goodfeed.core.db.Constants.USER_COMPANY_NAME;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "name",
@@ -18,12 +25,19 @@ import java.util.Map;
 })
 public class Company {
 
+    @ColumnInfo(name = USER_COMPANY_NAME)
     @JsonProperty("name")
     private String name;
+
+    @ColumnInfo(name = USER_COMPANY_CATCHPHRASE)
     @JsonProperty("catchPhrase")
     private String catchPhrase;
+
+    @ColumnInfo(name = USER_COMPANY_BS)
     @JsonProperty("bs")
     private String bs;
+
+    @Ignore
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
