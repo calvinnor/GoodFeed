@@ -4,19 +4,17 @@ import android.content.Context
 import com.mpaani.goodfeed.core.data.ApiProxy
 import com.mpaani.goodfeed.core.db.DataProxy
 import com.mpaani.goodfeed.core.event.Events
-import com.mpaani.goodfeed.core.mock.MockCall
-import com.mpaani.goodfeed.core.mock.getFakePost
-import com.mpaani.goodfeed.core.mock.getFakeUser
+import com.mpaani.goodfeed.core.mock.*
 import com.mpaani.goodfeed.feed.event.PostsEvent
 import com.mpaani.goodfeed.feed.event.UsersEvent
 import com.mpaani.goodfeed.feed.presenter.FeedPresenter
 import com.mpaani.goodfeed.feed.transformer.getFeedViewModels
-import com.mpaani.goodfeed.feed.viewmodel.FeedViewModel
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.never
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 
@@ -25,15 +23,6 @@ import org.mockito.junit.MockitoJUnitRunner
  */
 @RunWith(MockitoJUnitRunner::class)
 class FeedPresenterTest {
-
-    companion object {
-        private const val POST_ID = 1
-        private const val USER_EMAIL = "user@email.com"
-        private const val POST_TITLE = "post title"
-        private const val POST_DESC = "post desc"
-        private const val POST_AUTHOR = "post author"
-        private const val POST_COMPANY = "post company"
-    }
 
     @Mock
     lateinit var dataProxy: DataProxy
@@ -57,16 +46,13 @@ class FeedPresenterTest {
 
     @Test
     fun verifyThatFeedItemClickNavigatesToPost() {
-        val feedViewModel = FeedViewModel(POST_ID, USER_EMAIL, POST_TITLE, POST_DESC, POST_AUTHOR, POST_COMPANY)
+        val feedViewModel = getFakeFeedViewModel()
         feedPresenter.postClicked(feedViewModel)
         verify(feedView).onNavigateToPost(POST_ID, POST_AUTHOR, USER_EMAIL)
     }
 
     @Test
     fun verifyThatFetchItemsReadsFromDB() {
-        `when`(apiProxy.getUsers()).thenReturn(MockCall())
-        `when`(apiProxy.getPosts()).thenReturn(MockCall())
-
         feedPresenter.fetchItems()
         verify(dataProxy).getUsers()
         verify(dataProxy).getPosts()
@@ -74,29 +60,20 @@ class FeedPresenterTest {
 
     @Test
     fun verifyThatFetchItemsCallsApis() {
-        `when`(apiProxy.getUsers()).thenReturn(MockCall())
-        `when`(apiProxy.getPosts()).thenReturn(MockCall())
-
         feedPresenter.fetchItems()
-        verify(apiProxy).getUsers()
-        verify(apiProxy).getPosts()
+        verify(apiProxy).getUsers(MockApiResponse())
+        verify(apiProxy).getPosts(MockApiResponse())
     }
 
     @Test
     fun verifyThatForceRefreshCallsApis() {
-        `when`(apiProxy.getUsers()).thenReturn(MockCall())
-        `when`(apiProxy.getPosts()).thenReturn(MockCall())
-
         feedPresenter.forceRefreshItems()
-        verify(apiProxy).getUsers()
-        verify(apiProxy).getPosts()
+        verify(apiProxy).getUsers(MockApiResponse())
+        verify(apiProxy).getPosts(MockApiResponse())
     }
 
     @Test
     fun verifyThatForceRefreshDoesNotUseCache() {
-        `when`(apiProxy.getUsers()).thenReturn(MockCall())
-        `when`(apiProxy.getPosts()).thenReturn(MockCall())
-
         feedPresenter.forceRefreshItems()
         verify(dataProxy, never()).getUsers()
         verify(dataProxy, never()).getPosts()

@@ -2,8 +2,7 @@ package com.mpaani.goodfeed.post
 
 import android.content.Context
 import com.mpaani.goodfeed.R
-import com.mpaani.goodfeed.core.mock.getFakePost
-import com.mpaani.goodfeed.core.mock.getFakeUser
+import com.mpaani.goodfeed.core.mock.*
 import com.mpaani.goodfeed.post.transformer.getPostViewModel
 import org.junit.Before
 import org.junit.Test
@@ -18,12 +17,6 @@ import org.mockito.junit.MockitoJUnitRunner
  */
 @RunWith(MockitoJUnitRunner::class)
 class PostTransformerTest {
-
-    companion object {
-        private const val ANONYMOUS_NAME = "Anonymous"
-        private const val ANONYMOUS_EMAIL = "anony@gmail.com"
-        private const val ANONYMOUS_COMPANY = "Company Ltd"
-    }
 
     @Mock
     lateinit var appContext: Context

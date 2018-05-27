@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.annotation.VisibleForTesting
 import com.mpaani.goodfeed.R
 import com.mpaani.goodfeed.core.data.ApiProxy
+import com.mpaani.goodfeed.core.data.ApiResponse
 import com.mpaani.goodfeed.core.data.model.Comment
 import com.mpaani.goodfeed.core.data.model.Post
 import com.mpaani.goodfeed.core.data.model.User
@@ -19,9 +20,6 @@ import com.mpaani.goodfeed.post.transformer.getCommentsViewModels
 import com.mpaani.goodfeed.post.transformer.getPostViewModel
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.lang.ref.WeakReference
 import java.util.*
 import javax.inject.Inject
@@ -105,26 +103,24 @@ class PostPresenter : PostPresenterContract {
         if (returnCached) dataProxy.getComments()
 
         // Try to fetch from API
-        apiProxy.getComments().enqueue(object : Callback<List<Comment>> {
+        apiProxy.getComments(object : ApiResponse<List<Comment>>() {
 
-            override fun onFailure(call: Call<List<Comment>>?, t: Throwable?) {
-                postView()?.onError(appContext.getString(R.string.feed_cannot_fetch_api))
-            }
-
-            override fun onResponse(call: Call<List<Comment>>?, response: Response<List<Comment>>?) {
-                if (response?.body() == null) {
+            override fun onSuccess(response: List<Comment>?) {
+                if (response == null) {
                     postView()?.onError(appContext.getString(R.string.feed_cannot_fetch_api))
                     return
                 }
 
                 fetchFromServerComplete = true
+                dataProxy.insertComments(response) // DB Cache
 
-                val commentsList = response.body()!!
-                dataProxy.insertComments(commentsList) // Cache
-
-                val commentsForThisPost = getCommentsForThisPost(commentsList)
+                val commentsForThisPost = getCommentsForThisPost(response)
                 populateCommentsList(commentsForThisPost)
                 convertToCommentsViewModel()
+            }
+
+            override fun onFailure(throwable: Throwable) {
+                postView()?.onError(appContext.getString(R.string.feed_cannot_fetch_api))
             }
         })
     }

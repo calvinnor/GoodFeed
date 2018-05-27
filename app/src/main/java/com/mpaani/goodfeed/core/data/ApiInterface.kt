@@ -7,7 +7,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 
 /**
- * Retrofit endpoints for our app.
+ * API endpoints for the app.
  */
 interface ApiInterface {
 

@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.annotation.VisibleForTesting
 import com.mpaani.goodfeed.R
 import com.mpaani.goodfeed.core.data.ApiProxy
+import com.mpaani.goodfeed.core.data.ApiResponse
 import com.mpaani.goodfeed.core.data.model.Post
 import com.mpaani.goodfeed.core.data.model.User
 import com.mpaani.goodfeed.core.db.DataProxy
@@ -17,9 +18,6 @@ import com.mpaani.goodfeed.feed.transformer.getFeedViewModels
 import com.mpaani.goodfeed.feed.viewmodel.FeedViewModel
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -94,24 +92,22 @@ class FeedPresenter : FeedPresenterContract {
         if (returnCached) dataProxy.getUsers()
 
         // Try to fetch from API
-        apiProxy.getUsers().enqueue(object : Callback<List<User>> {
+        apiProxy.getUsers(object : ApiResponse<List<User>>() {
 
-            override fun onFailure(call: Call<List<User>>?, t: Throwable?) {
-                feedView()?.onError(appContext.getString(R.string.feed_cannot_fetch_api))
-            }
-
-            override fun onResponse(call: Call<List<User>>?, response: Response<List<User>>?) {
-                if (response?.body() == null) {
+            override fun onSuccess(response: List<User>?) {
+                if (response == null) {
                     feedView()?.onError(appContext.getString(R.string.feed_cannot_fetch_api))
                     return
                 }
 
                 fetchedUsersFromServer = true
-                val usersList = response.body()!!
-
-                populateUserList(usersList)
+                populateUserList(response)
                 cacheUsers()
                 convertToViewModels()
+            }
+
+            override fun onFailure(throwable: Throwable) {
+                feedView()?.onError(appContext.getString(R.string.feed_cannot_fetch_api))
             }
         })
     }
@@ -120,24 +116,22 @@ class FeedPresenter : FeedPresenterContract {
         if (returnCached) dataProxy.getPosts()
 
         // Try to fetch from API
-        apiProxy.getPosts().enqueue(object : Callback<List<Post>> {
+        apiProxy.getPosts(object : ApiResponse<List<Post>>() {
 
-            override fun onFailure(call: Call<List<Post>>?, t: Throwable?) {
-                feedView()?.onError(appContext.getString(R.string.feed_cannot_fetch_api))
-            }
-
-            override fun onResponse(call: Call<List<Post>>?, response: Response<List<Post>>?) {
-                if (response?.body() == null) {
+            override fun onSuccess(response: List<Post>?) {
+                if (response == null) {
                     feedView()?.onError(appContext.getString(R.string.feed_cannot_fetch_api))
                     return
                 }
 
                 fetchedPostsFromServer = true
-                val postsList = response.body()!!
-
-                populatePostList(postsList)
+                populatePostList(response)
                 cachePosts()
                 convertToViewModels()
+            }
+
+            override fun onFailure(throwable: Throwable) {
+                feedView()?.onError(appContext.getString(R.string.feed_cannot_fetch_api))
             }
         })
     }

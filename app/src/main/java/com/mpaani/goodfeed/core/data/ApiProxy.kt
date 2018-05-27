@@ -3,16 +3,25 @@ package com.mpaani.goodfeed.core.data
 import com.mpaani.goodfeed.core.data.model.Comment
 import com.mpaani.goodfeed.core.data.model.Post
 import com.mpaani.goodfeed.core.data.model.User
-import retrofit2.Call
 
 /**
  * Interface to hide API implementations from UI clients.
  */
 interface ApiProxy {
 
-    fun getPosts(): Call<List<Post>>
+    /**
+     * Get the posts from server.
+     */
+    fun getPosts(apiResponse: ApiResponse<List<Post>>)
 
-    fun getUsers(): Call<List<User>>
+    /**
+     * Get all users from server.
+     */
+    fun getUsers(apiResponse: ApiResponse<List<User>>)
 
-    fun getComments(): Call<List<Comment>>
+    /**
+     * Get all post's comments from server.
+     */
+    fun getComments(apiResponse: ApiResponse<List<Comment>>)
+
 }

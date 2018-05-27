@@ -4,10 +4,7 @@ import android.content.Context
 import com.mpaani.goodfeed.core.data.ApiProxy
 import com.mpaani.goodfeed.core.db.DataProxy
 import com.mpaani.goodfeed.core.event.Events
-import com.mpaani.goodfeed.core.mock.MockCall
-import com.mpaani.goodfeed.core.mock.getFakeComment
-import com.mpaani.goodfeed.core.mock.getFakePost
-import com.mpaani.goodfeed.core.mock.getFakeUser
+import com.mpaani.goodfeed.core.mock.*
 import com.mpaani.goodfeed.post.event.CommentsEvent
 import com.mpaani.goodfeed.post.event.PostEvent
 import com.mpaani.goodfeed.post.event.UserEvent
@@ -19,7 +16,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
@@ -29,11 +25,6 @@ import org.mockito.junit.MockitoJUnitRunner
  */
 @RunWith(MockitoJUnitRunner::class)
 class PostPresenterTest {
-
-    companion object {
-        private const val POST_ID = 1
-        private const val USER_EMAIL = "user@email.com"
-    }
 
     @Mock
     lateinit var dataProxy: DataProxy
@@ -70,18 +61,14 @@ class PostPresenterTest {
 
     @Test
     fun verifyThatFetchCommentReadsFromDB() {
-        `when`(apiProxy.getComments()).thenReturn(MockCall())
-
         postPresenter.fetchComments()
         verify(dataProxy).getComments()
     }
 
     @Test
     fun verifyThatFetchCommentCallsApi() {
-        `when`(apiProxy.getComments()).thenReturn(MockCall())
-
         postPresenter.fetchComments()
-        verify(apiProxy).getComments()
+        verify(apiProxy).getComments(MockApiResponse())
     }
 
     @Test
@@ -92,16 +79,12 @@ class PostPresenterTest {
 
     @Test
     fun verifyThatForceRefreshCallsApis() {
-        `when`(apiProxy.getComments()).thenReturn(MockCall())
-
         postPresenter.forceRefreshItems()
-        verify(apiProxy).getComments()
+        verify(apiProxy).getComments(MockApiResponse())
     }
 
     @Test
     fun verifyThatForceRefreshDoesNotUseCache() {
-        `when`(apiProxy.getComments()).thenReturn(MockCall())
-
         postPresenter.forceRefreshItems()
         verify(dataProxy, Mockito.never()).getComments()
     }

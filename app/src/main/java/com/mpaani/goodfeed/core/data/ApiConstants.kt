@@ -9,6 +9,6 @@ const val USERS_ENDPOINT = "users"
 const val COMMENTS_ENDPOINT = "comments"
 
 /**
- * Gets the URL for fetching an Avatar.
+ * Return the URL for fetching an Avatar for given user's Email.
  */
 fun getAvatarUrl(userEmail: String) = "https://api.adorable.io/avatars/$userEmail"

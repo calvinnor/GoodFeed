@@ -1,5 +1,8 @@
 package com.mpaani.goodfeed.core.data
 
+import com.mpaani.goodfeed.core.data.model.Comment
+import com.mpaani.goodfeed.core.data.model.Post
+import com.mpaani.goodfeed.core.data.model.User
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 
@@ -20,11 +23,17 @@ object RetroFit : ApiProxy {
         apiInterface = retroFitInstance.create(ApiInterface::class.java)
     }
 
-    override fun getPosts() = apiInterface.fetchPosts()
+    override fun getPosts(apiResponse: ApiResponse<List<Post>>) {
+        apiInterface.fetchPosts().enqueue(apiResponse)
+    }
 
-    override fun getUsers() = apiInterface.fetchUsers()
+    override fun getUsers(apiResponse: ApiResponse<List<User>>) {
+        apiInterface.fetchUsers().enqueue(apiResponse)
+    }
 
-    override fun getComments() = apiInterface.fetchComments()
+    override fun getComments(apiResponse: ApiResponse<List<Comment>>) {
+        apiInterface.fetchComments().enqueue(apiResponse)
+    }
 
     private fun buildRetrofit(): Retrofit {
         return Retrofit.Builder()
