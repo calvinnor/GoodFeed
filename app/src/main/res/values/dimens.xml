@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Feed -->
-    <dimen name="feed_image_size">75dp</dimen>
+    <dimen name="feed_image_size">70dp</dimen>
     <dimen name="feed_profile_spacing">3dp</dimen>
     <dimen name="feed_content_padding">10dp</dimen>
     <dimen name="feed_item_small_spacing">5dp</dimen>

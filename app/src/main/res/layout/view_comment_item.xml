@@ -10,8 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
         android:padding="@dimen/comment_container_spacing">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -24,7 +22,7 @@
         <TextView
             android:id="@+id/comment_user_name"
             style="@style/TextStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/comment_content_spacing"
             android:ellipsize="end"
@@ -32,6 +30,7 @@
             android:padding="@dimen/comment_content_spacing"
             android:textStyle="bold"
             app:layout_constraintLeft_toRightOf="@id/comment_user_image"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Some User" />
 
@@ -40,6 +39,8 @@
             style="@style/TextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="@integer/comment_body_max_lines"
             android:paddingBottom="@dimen/comment_content_spacing"
             android:paddingEnd="@dimen/comment_content_spacing"
             android:paddingStart="@dimen/comment_content_spacing"

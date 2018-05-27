@@ -38,14 +38,16 @@ class FeedPresenter : FeedPresenterContract {
     @Inject
     protected lateinit var appContext: Context
 
-    private lateinit var feedView: WeakReference<FeedViewContract>
+    private var feedView: WeakReference<FeedViewContract>
     private val postItems: MutableList<Post> = ArrayList()
     private val userList: MutableList<User> = ArrayList()
 
-    private var fetchFromServerComplete = false
+    private var fetchedUsersFromServer = false
+    private var fetchedPostsFromServer = false
 
     constructor(feedViewContract: FeedViewContract) {
         dependencyComponent.inject(this)
+
         feedView = WeakReference<FeedViewContract>(feedViewContract)
         Events.subscribe(this)
     }
@@ -65,8 +67,19 @@ class FeedPresenter : FeedPresenterContract {
     }
 
     override fun fetchItems() {
-        fetchPosts()
-        fetchUsers()
+        fetchedUsersFromServer = false
+        fetchedPostsFromServer = false
+
+        fetchPosts(returnCached = true)
+        fetchUsers(returnCached = true)
+    }
+
+    override fun forceRefreshItems() {
+        fetchedUsersFromServer = false
+        fetchedPostsFromServer = false
+
+        fetchPosts(returnCached = false)
+        fetchUsers(returnCached = false)
     }
 
     override fun postClicked(feedViewModel: FeedViewModel) {
@@ -77,9 +90,8 @@ class FeedPresenter : FeedPresenterContract {
         Events.unsubscribe(this)
     }
 
-    private fun fetchUsers() {
-        // Fetch from DB first
-        dataProxy.getUsers()
+    private fun fetchUsers(returnCached: Boolean) {
+        if (returnCached) dataProxy.getUsers()
 
         // Try to fetch from API
         apiProxy.getUsers().enqueue(object : Callback<List<User>> {
@@ -94,6 +106,7 @@ class FeedPresenter : FeedPresenterContract {
                     return
                 }
 
+                fetchedUsersFromServer = true
                 val usersList = response.body()!!
 
                 populateUserList(usersList)
@@ -103,9 +116,8 @@ class FeedPresenter : FeedPresenterContract {
         })
     }
 
-    private fun fetchPosts() {
-        // Fetch from DB first
-        dataProxy.getPosts()
+    private fun fetchPosts(returnCached: Boolean) {
+        if (returnCached) dataProxy.getPosts()
 
         // Try to fetch from API
         apiProxy.getPosts().enqueue(object : Callback<List<Post>> {
@@ -120,6 +132,7 @@ class FeedPresenter : FeedPresenterContract {
                     return
                 }
 
+                fetchedPostsFromServer = true
                 val postsList = response.body()!!
 
                 populatePostList(postsList)
@@ -146,7 +159,7 @@ class FeedPresenter : FeedPresenterContract {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onUsersReceived(usersEvent: UsersEvent) {
         Events.removeSticky(usersEvent)
-        if (fetchFromServerComplete) return
+        if (fetchedUsersFromServer) return
         if (usersEvent.userList.isEmpty()) return
         populateUserList(usersEvent.userList)
         convertToViewModels()
@@ -155,7 +168,7 @@ class FeedPresenter : FeedPresenterContract {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onPostsReceived(postsEvent: PostsEvent) {
         Events.removeSticky(postsEvent)
-        if (fetchFromServerComplete) return
+        if (fetchedPostsFromServer) return
         if (postsEvent.postsList.isEmpty()) return
         populatePostList(postsEvent.postsList)
         convertToViewModels()

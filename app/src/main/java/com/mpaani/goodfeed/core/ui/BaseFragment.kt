@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.annotation.MenuRes
 import android.support.v4.app.Fragment
+import android.support.v4.widget.SwipeRefreshLayout
 import android.view.*
 
 /**
@@ -47,6 +48,11 @@ abstract class BaseFragment : Fragment() {
     protected open val menu = NO_LAYOUT
 
     /**
+     * Override this value to provide a Refresh Indicator
+     */
+    protected open val refreshIndicator: SwipeRefreshLayout? = null
+
+    /**
      * Override this value to provide a fragment tag.
      * This will be used in Fragment Transactions.
      */
@@ -61,5 +67,13 @@ abstract class BaseFragment : Fragment() {
         val activityLayout = layout
         return if (activityLayout == NO_LAYOUT) null
         else inflater.inflate(layout, null, false)
+    }
+
+    protected fun startLoadingIndicator() {
+        refreshIndicator?.isRefreshing = true
+    }
+
+    protected fun stopLoadingIndicator() {
+        refreshIndicator?.isRefreshing = false
     }
 }

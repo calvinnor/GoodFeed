@@ -31,6 +31,11 @@ interface PostPresenterContract : BasePresenterContract {
     fun fetchPost()
 
     /**
+     * Forces a refresh of items, does not return cached values.
+     */
+    fun forceRefreshItems()
+
+    /**
      * Fetch the comments for the post.
      */
     fun fetchComments()

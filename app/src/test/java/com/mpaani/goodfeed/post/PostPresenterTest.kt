@@ -18,6 +18,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
@@ -87,6 +88,22 @@ class PostPresenterTest {
     fun verifyThatViewReceivesCommentViewModels() {
         fakeComments()
         verify(postView).onCommentsReceived(generateCommentsViewModels())
+    }
+
+    @Test
+    fun verifyThatForceRefreshCallsApis() {
+        `when`(apiProxy.getComments()).thenReturn(MockCall())
+
+        postPresenter.forceRefreshItems()
+        verify(apiProxy).getComments()
+    }
+
+    @Test
+    fun verifyThatForceRefreshDoesNotUseCache() {
+        `when`(apiProxy.getComments()).thenReturn(MockCall())
+
+        postPresenter.forceRefreshItems()
+        verify(dataProxy, Mockito.never()).getComments()
     }
 
     private fun generatePostViewModel() =

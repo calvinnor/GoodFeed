@@ -1,9 +1,10 @@
 package com.mpaani.goodfeed.post.ui
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
-import android.widget.Toast
 import com.mpaani.goodfeed.R
 import com.mpaani.goodfeed.core.extension.loadAvatar
 import com.mpaani.goodfeed.core.extension.setVisible
@@ -29,6 +30,7 @@ class PostFragment : BaseFragment(), PostViewContract {
 
     override val fragmentTag = TAG
     override val layout = R.layout.fragment_post
+    override lateinit var refreshIndicator: SwipeRefreshLayout
 
     private lateinit var postPresenter: PostPresenterContract
     private val commentsAdapter = CommentsAdapter()
@@ -44,7 +46,6 @@ class PostFragment : BaseFragment(), PostViewContract {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView()
         initialiseViews()
         fetchData()
     }
@@ -65,6 +66,7 @@ class PostFragment : BaseFragment(), PostViewContract {
     }
 
     override fun onPostReceived(postViewModel: PostViewModel) {
+        stopLoadingIndicator()
         feed_item_profile_image.loadAvatar(postViewModel.userEmail)
         feed_item_profile_name.text = postViewModel.postAuthor
         feed_item_profile_company.text = postViewModel.postAuthorCompany
@@ -73,6 +75,7 @@ class PostFragment : BaseFragment(), PostViewContract {
     }
 
     override fun onCommentsReceived(commentViewModels: List<CommentViewModel>) {
+        stopLoadingIndicator()
         post_comments_header.setVisible()
         post_comments_header.text = getString(R.string.post_comments_header, commentViewModels.size)
         commentsAdapter.setItems(commentViewModels)
@@ -80,7 +83,8 @@ class PostFragment : BaseFragment(), PostViewContract {
     }
 
     override fun onError(reason: String) {
-        Toast.makeText(context, reason, Toast.LENGTH_LONG).show()
+        stopLoadingIndicator()
+        Snackbar.make(refreshIndicator, reason, Snackbar.LENGTH_LONG).show()
     }
 
     private fun initRecyclerView() {
@@ -100,6 +104,18 @@ class PostFragment : BaseFragment(), PostViewContract {
     }
 
     private fun initialiseViews() {
+        removeMaxLineLimits()
+        initSwipeRefresh()
+        initRecyclerView()
+    }
+
+    private fun initSwipeRefresh() {
+        refreshIndicator = post_swipe_refresh
+        refreshIndicator.setOnRefreshListener { postPresenter.forceRefreshItems() }
+        startLoadingIndicator()
+    }
+
+    private fun removeMaxLineLimits() {
         // We are re-using the Feed Item layout.
         // Remove restrictions that exists on Feed.
         feed_item_title.maxLines = Integer.MAX_VALUE

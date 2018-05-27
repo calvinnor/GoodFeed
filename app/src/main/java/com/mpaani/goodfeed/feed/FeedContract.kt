@@ -30,6 +30,11 @@ interface FeedPresenterContract : BasePresenterContract {
     fun fetchItems()
 
     /**
+     * Forces a refresh of items, does not return cached values.
+     */
+    fun forceRefreshItems()
+
+    /**
      * When the user taps on a given Feed.
      */
     fun postClicked(feedViewModel: FeedViewModel)

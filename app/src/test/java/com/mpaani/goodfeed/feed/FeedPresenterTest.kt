@@ -16,8 +16,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 
@@ -81,6 +80,26 @@ class FeedPresenterTest {
         feedPresenter.fetchItems()
         verify(apiProxy).getUsers()
         verify(apiProxy).getPosts()
+    }
+
+    @Test
+    fun verifyThatForceRefreshCallsApis() {
+        `when`(apiProxy.getUsers()).thenReturn(MockCall())
+        `when`(apiProxy.getPosts()).thenReturn(MockCall())
+
+        feedPresenter.forceRefreshItems()
+        verify(apiProxy).getUsers()
+        verify(apiProxy).getPosts()
+    }
+
+    @Test
+    fun verifyThatForceRefreshDoesNotUseCache() {
+        `when`(apiProxy.getUsers()).thenReturn(MockCall())
+        `when`(apiProxy.getPosts()).thenReturn(MockCall())
+
+        feedPresenter.forceRefreshItems()
+        verify(dataProxy, never()).getUsers()
+        verify(dataProxy, never()).getPosts()
     }
 
     @Test

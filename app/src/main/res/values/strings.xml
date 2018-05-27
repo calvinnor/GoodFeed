@@ -13,6 +13,6 @@
     <string name="post_comments_header">%1$d Comments</string>
 
     <!-- Feed Errors -->
-    <string name="feed_cannot_fetch_api">Could not load data from server.\nPlease try again.</string>
+    <string name="feed_cannot_fetch_api">Could not load data from server. Please try again.</string>
 
 </resources>

@@ -2,9 +2,10 @@ package com.mpaani.goodfeed.feed.ui
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.design.widget.Snackbar
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
-import android.widget.Toast
 import com.mpaani.goodfeed.R
 import com.mpaani.goodfeed.core.ui.BaseFragment
 import com.mpaani.goodfeed.feed.FeedPresenterContract
@@ -24,6 +25,7 @@ class FeedFragment : BaseFragment(), FeedViewContract, FeedAdapter.FeedListener 
 
     override val fragmentTag = TAG
     override val layout = R.layout.fragment_feed
+    override lateinit var refreshIndicator: SwipeRefreshLayout
 
     private lateinit var feedPresenter: FeedPresenterContract
     private val feedAdapter = FeedAdapter(this)
@@ -39,7 +41,7 @@ class FeedFragment : BaseFragment(), FeedViewContract, FeedAdapter.FeedListener 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecyclerView()
+        initViews()
         fetchData()
     }
 
@@ -63,16 +65,30 @@ class FeedFragment : BaseFragment(), FeedViewContract, FeedAdapter.FeedListener 
     }
 
     override fun onFeedItemsReceived(feedModels: List<FeedViewModel>) {
+        stopLoadingIndicator()
         feedAdapter.setItems(feedModels)
         recyclerSavedState?.let { feed_recyclerview.layoutManager.onRestoreInstanceState(recyclerSavedState) }
     }
 
     override fun onNavigateToPost(postId: Int, userName: String, userEmail: String) {
+        stopLoadingIndicator()
         PostActivity.startActivity(context!!, postId, userName, userEmail)
     }
 
     override fun onError(reason: String) {
-        Toast.makeText(context, reason, Toast.LENGTH_LONG).show()
+        stopLoadingIndicator()
+        Snackbar.make(refreshIndicator, reason, Snackbar.LENGTH_LONG).show()
+    }
+
+    private fun initViews() {
+        initSwipeRefresh()
+        initRecyclerView()
+    }
+
+    private fun initSwipeRefresh() {
+        refreshIndicator = feed_swipe_refresh
+        refreshIndicator.setOnRefreshListener { feedPresenter.forceRefreshItems() }
+        startLoadingIndicator()
     }
 
     private fun initRecyclerView() {

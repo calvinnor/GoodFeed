@@ -89,17 +89,20 @@ class PostPresenter : PostPresenterContract {
         dataProxy.getUserByEmail(userEmail)
     }
 
+    override fun forceRefreshItems() {
+        internalFetchComments(returnCached = false)
+    }
+
     override fun fetchComments() {
-        internalFetchComments()
+        internalFetchComments(returnCached = true)
     }
 
     override fun onExit() {
         Events.unsubscribe(this)
     }
 
-    private fun internalFetchComments() {
-        // Fetch from DB first
-        dataProxy.getComments()
+    private fun internalFetchComments(returnCached: Boolean) {
+        if (returnCached) dataProxy.getComments()
 
         // Try to fetch from API
         apiProxy.getComments().enqueue(object : Callback<List<Comment>> {

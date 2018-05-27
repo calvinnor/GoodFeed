@@ -42,6 +42,12 @@ class CommentsAdapter : RecyclerView.Adapter<CommentsAdapter.CommentViewHolder>(
             commentUserImage.loadAvatar(commentItem.commentEmail)
             commentAuthorName.text = commentItem.commentName
             commentBody.text = commentItem.commentBody
+
+            rootView.setOnClickListener {
+                val isExpanded = commentBody.maxLines == Integer.MAX_VALUE
+                if (isExpanded) commentBody.maxLines = rootView.resources.getInteger(R.integer.comment_body_max_lines)
+                else commentBody.maxLines = Integer.MAX_VALUE
+            }
         }
     }
 }
