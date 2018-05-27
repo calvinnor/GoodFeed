@@ -1,0 +1,11 @@
+<resources>
+
+    <style name="ToolbarStyle">
+        <item name="android:background">?android:attr/colorPrimary</item>
+    </style>
+
+    <style name="NestedRecyclerStyle">
+        <item name="android:nestedScrollingEnabled">false</item>
+    </style>
+
+</resources>

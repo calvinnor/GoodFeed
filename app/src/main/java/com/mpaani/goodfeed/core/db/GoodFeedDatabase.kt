@@ -11,7 +11,7 @@ import com.mpaani.goodfeed.core.db.dao.CommentDao
 import com.mpaani.goodfeed.core.db.dao.PostDao
 import com.mpaani.goodfeed.core.db.dao.UserDao
 
-@Database(entities = arrayOf(Comment::class, User::class, Post::class), version = DATABASE_VERSION)
+@Database(entities = [(Comment::class), (User::class), (Post::class)], version = DATABASE_VERSION, exportSchema = false)
 abstract class GoodFeedDatabase : RoomDatabase() {
 
     abstract fun commentDao(): CommentDao
@@ -29,7 +29,6 @@ abstract class GoodFeedDatabase : RoomDatabase() {
          * Methods for fetching DB operation objects.
          */
         fun commentDao() = INSTANCE.commentDao()
-
         fun userDao() = INSTANCE.userDao()
         fun postDao() = INSTANCE.postDao()
 

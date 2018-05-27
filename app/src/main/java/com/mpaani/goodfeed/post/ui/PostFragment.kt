@@ -27,7 +27,8 @@ class PostFragment : BaseFragment(), PostViewContract {
     companion object {
         const val TAG = "PostFragment"
 
-        private const val DEFAULT_SCROLL_POSITION = 0
+        private const val NO_SAVED_POSITION = -1
+
         private const val POST_SCROLL_STATE = "post_scroll_state"
     }
 
@@ -39,7 +40,7 @@ class PostFragment : BaseFragment(), PostViewContract {
     private lateinit var postViewCache: PostViewCache
     private val commentsAdapter = CommentsAdapter()
 
-    private var postScrollState: Int = DEFAULT_SCROLL_POSITION
+    private var postScrollState: Int = NO_SAVED_POSITION
 
     /**
      * Set this fragment's presenter.
@@ -92,7 +93,7 @@ class PostFragment : BaseFragment(), PostViewContract {
     private fun populateComments(commentViewModels: List<CommentViewModel>) {
         stopLoadingIndicator()
         post_comments_header.setVisible()
-        post_comments_header.text = getString(R.string.post_comments_header, commentViewModels.size)
+        post_comments_header.text = resources.getQuantityString(R.plurals.comments_label, commentViewModels.size, commentViewModels.size)
         commentsAdapter.setItems(commentViewModels)
         scrollToSavedPosition()
     }
@@ -118,8 +119,10 @@ class PostFragment : BaseFragment(), PostViewContract {
     }
 
     private fun scrollToSavedPosition() {
-        post_root_scrollview.scrollY = postScrollState
-        postScrollState = DEFAULT_SCROLL_POSITION
+        if (postScrollState != NO_SAVED_POSITION) {
+            post_root_scrollview.scrollY = postScrollState
+            postScrollState = NO_SAVED_POSITION
+        }
     }
 
     private fun initialiseViews() {

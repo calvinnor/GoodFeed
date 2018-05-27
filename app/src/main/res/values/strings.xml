@@ -5,12 +5,13 @@
     <!-- Feed -->
     <string name="feed_toolbar_title">Home</string>
     <string name="feed_anonymous_user_name">Anonymous</string>
-    <string name="feed_anonymous_user_company">Anony Pvt Ltd</string>
+    <string name="feed_anonymous_user_company">Anonymous Pvt Ltd</string>
     <string name="feed_anonymous_user_email">anonymous@anon.com</string>
 
     <!-- Post -->
     <string name="post_toolbar_title">%1$s\'s Post</string>
-    <string name="post_comments_header">%1$d Comments</string>
+    <string name="post_comment_header">Comment</string>
+    <string name="post_comments_header">Comments</string>
 
     <!-- Feed Errors -->
     <string name="feed_cannot_fetch_api">Could not load data from server. Please try again.</string>

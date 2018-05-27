@@ -70,7 +70,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/feed_item_title"
-            tools:text="This is some really long description hoping that the ellipsize will kick in and avoid a really long post. This ellipside should kick in at some time now" />
+            tools:text="This is some really long description hoping that the ellipsize will kick in and avoid a really long post. This ellipsize should kick in at some time now" />
 
     </android.support.constraint.ConstraintLayout>
 

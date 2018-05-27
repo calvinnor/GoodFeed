@@ -27,16 +27,16 @@ import org.mockito.junit.MockitoJUnitRunner
 class PostPresenterTest {
 
     @Mock
-    lateinit var dataProxy: DataProxy
+    private lateinit var dataProxy: DataProxy
 
     @Mock
-    lateinit var apiProxy: ApiProxy
+    private lateinit var apiProxy: ApiProxy
 
     @Mock
-    lateinit var postView: PostViewContract
+    private lateinit var postView: PostViewContract
 
     @Mock
-    lateinit var appContext: Context
+    private lateinit var appContext: Context
 
     private lateinit var postPresenter: PostPresenter
 

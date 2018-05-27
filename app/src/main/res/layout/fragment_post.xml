@@ -44,9 +44,9 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/post_comments_recyclerview"
+                style="@style/NestedRecyclerStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/post_comments_header" />

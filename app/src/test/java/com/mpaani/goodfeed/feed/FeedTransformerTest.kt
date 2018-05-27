@@ -19,7 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner
 class FeedTransformerTest {
 
     @Mock
-    lateinit var appContext: Context
+    private lateinit var appContext: Context
 
     @Before
     fun beforeTest() {

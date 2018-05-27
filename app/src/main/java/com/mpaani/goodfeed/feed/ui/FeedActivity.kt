@@ -17,8 +17,7 @@ class FeedActivity : BaseActivity() {
             // On Activity destroy in background, Fragment is automatically created and attached
             var feedFragment = supportFragmentManager.findFragmentByTag(FeedFragment.TAG)
 
-            if (feedFragment == null) feedFragment = FeedFragment()
-            else feedFragment = feedFragment as FeedFragment
+            feedFragment = if (feedFragment == null) FeedFragment() else feedFragment as FeedFragment
 
             field = feedFragment
             return field
@@ -29,5 +28,5 @@ class FeedActivity : BaseActivity() {
         feedFragment.setFeedPresenter(FeedPresenter(feedFragment))
     }
 
-    override fun getToolbarTitle() = getString(R.string.feed_toolbar_title)
+    override fun getToolbarTitle(): String = getString(R.string.feed_toolbar_title)
 }

@@ -25,16 +25,16 @@ import org.mockito.junit.MockitoJUnitRunner
 class FeedPresenterTest {
 
     @Mock
-    lateinit var dataProxy: DataProxy
+    private lateinit var dataProxy: DataProxy
 
     @Mock
-    lateinit var apiProxy: ApiProxy
+    private lateinit var apiProxy: ApiProxy
 
     @Mock
-    lateinit var feedView: FeedViewContract
+    private lateinit var feedView: FeedViewContract
 
     @Mock
-    lateinit var appContext: Context
+    private lateinit var appContext: Context
 
     private lateinit var feedPresenter: FeedPresenter
 

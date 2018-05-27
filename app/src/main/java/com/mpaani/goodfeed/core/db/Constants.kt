@@ -28,7 +28,7 @@ const val USER_COMPANY_BS = "companyBs"
 const val USER_ADDRESS_STREET = "addressStreet"
 const val USER_ADDRESS_CITY = "addressCity"
 const val USER_ADDRESS_SUITE = "addressSuite"
-const val USER_ADDRESS_ZIPCODE = "addressZipcode"
+const val USER_ADDRESS_ZIPCODE = "addressZipCode"
 const val USER_ADDRESS_GEO_LAT = "addressGeoLat"
 const val USER_ADDRESS_GEO_LNG = "addressGeoLng"
 

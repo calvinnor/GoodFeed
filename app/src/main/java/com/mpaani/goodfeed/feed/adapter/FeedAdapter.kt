@@ -33,7 +33,7 @@ class FeedAdapter(private val feedListener: FeedListener) : RecyclerView.Adapter
     override fun onBindViewHolder(holder: FeedViewHolder, position: Int) =
             holder.bind(feedList[position], feedListener)
 
-    class FeedViewHolder(private val rootView: View) : RecyclerView.ViewHolder(rootView) {
+    class FeedViewHolder(rootView: View) : RecyclerView.ViewHolder(rootView) {
 
         private val rootContainer = rootView.feed_item_root
         private val postAuthorImage = rootView.feed_item_profile_image

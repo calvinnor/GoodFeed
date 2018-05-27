@@ -46,8 +46,7 @@ class PostActivity : BaseActivity() {
             // On Activity destroy in background, Fragment is automatically created and attached
             var postFragment = supportFragmentManager.findFragmentByTag(PostFragment.TAG)
 
-            if (postFragment == null) postFragment = PostFragment()
-            else postFragment = postFragment as PostFragment
+            postFragment = if (postFragment == null) PostFragment() else postFragment as PostFragment
 
             field = postFragment
             return field
