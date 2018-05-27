@@ -1,5 +1,6 @@
 package com.mpaani.goodfeed.feed.ui
 
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.design.widget.Snackbar
@@ -11,6 +12,7 @@ import com.mpaani.goodfeed.core.ui.BaseFragment
 import com.mpaani.goodfeed.feed.FeedPresenterContract
 import com.mpaani.goodfeed.feed.FeedViewContract
 import com.mpaani.goodfeed.feed.adapter.FeedAdapter
+import com.mpaani.goodfeed.feed.viewmodel.FeedViewCache
 import com.mpaani.goodfeed.feed.viewmodel.FeedViewModel
 import com.mpaani.goodfeed.post.ui.PostActivity
 import kotlinx.android.synthetic.main.fragment_feed.*
@@ -20,7 +22,7 @@ class FeedFragment : BaseFragment(), FeedViewContract, FeedAdapter.FeedListener 
     companion object {
         const val TAG = "FeedFragment"
 
-        private const val FEED_RECYCLER_SAVED_STATE = "feed_saved_state"
+        private const val FEED_SCROLL_STATE = "feed_scroll_state"
     }
 
     override val fragmentTag = TAG
@@ -28,9 +30,10 @@ class FeedFragment : BaseFragment(), FeedViewContract, FeedAdapter.FeedListener 
     override lateinit var refreshIndicator: SwipeRefreshLayout
 
     private lateinit var feedPresenter: FeedPresenterContract
+    private lateinit var feedViewCache: FeedViewCache
     private val feedAdapter = FeedAdapter(this)
 
-    private var recyclerSavedState: Parcelable? = null
+    private var savedScrollState: Parcelable? = null
 
     /**
      * Set this fragment's presenter.
@@ -41,6 +44,7 @@ class FeedFragment : BaseFragment(), FeedViewContract, FeedAdapter.FeedListener 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initialiseCache()
         initViews()
         fetchData()
     }
@@ -52,12 +56,12 @@ class FeedFragment : BaseFragment(), FeedViewContract, FeedAdapter.FeedListener 
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(FEED_RECYCLER_SAVED_STATE, feed_recyclerview.layoutManager.onSaveInstanceState())
+        outState.putParcelable(FEED_SCROLL_STATE, feed_recyclerview.layoutManager.onSaveInstanceState())
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        recyclerSavedState = savedInstanceState.getParcelable(FEED_RECYCLER_SAVED_STATE)
+        savedScrollState = savedInstanceState.getParcelable(FEED_SCROLL_STATE)
     }
 
     override fun onFeedItemClicked(feedViewModel: FeedViewModel) {
@@ -65,9 +69,17 @@ class FeedFragment : BaseFragment(), FeedViewContract, FeedAdapter.FeedListener 
     }
 
     override fun onFeedItemsReceived(feedModels: List<FeedViewModel>) {
+        populateFeed(feedModels)
+        cacheViewModels(feedModels)
+    }
+
+    private fun populateFeed(feedModels: List<FeedViewModel>) {
         stopLoadingIndicator()
         feedAdapter.setItems(feedModels)
-        recyclerSavedState?.let { feed_recyclerview.layoutManager.onRestoreInstanceState(recyclerSavedState) }
+        savedScrollState?.let {
+            feed_recyclerview.layoutManager.onRestoreInstanceState(savedScrollState)
+            savedScrollState = null
+        }
     }
 
     override fun onNavigateToPost(postId: Int, userName: String, userEmail: String) {
@@ -99,7 +111,16 @@ class FeedFragment : BaseFragment(), FeedViewContract, FeedAdapter.FeedListener 
     }
 
     private fun fetchData() {
-        feedPresenter.fetchItems()
+        if (feedViewCache.hasData()) populateFeed(feedViewCache.getItems()!!)
+        else feedPresenter.fetchItems()
+    }
+
+    private fun initialiseCache() {
+        feedViewCache = ViewModelProviders.of(this).get(FeedViewCache::class.java)
+    }
+
+    private fun cacheViewModels(feedModels: List<FeedViewModel>) {
+        feedViewCache.cacheItems(feedModels)
     }
 
     private fun postClicked(feedViewModel: FeedViewModel) {

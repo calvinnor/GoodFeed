@@ -1,5 +1,6 @@
 package com.mpaani.goodfeed.post.ui
 
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.widget.SwipeRefreshLayout
@@ -13,6 +14,7 @@ import com.mpaani.goodfeed.post.PostPresenterContract
 import com.mpaani.goodfeed.post.PostViewContract
 import com.mpaani.goodfeed.post.adapter.CommentsAdapter
 import com.mpaani.goodfeed.post.viewmodel.CommentViewModel
+import com.mpaani.goodfeed.post.viewmodel.PostViewCache
 import com.mpaani.goodfeed.post.viewmodel.PostViewModel
 import kotlinx.android.synthetic.main.fragment_post.*
 import kotlinx.android.synthetic.main.view_feed_item.*
@@ -25,6 +27,7 @@ class PostFragment : BaseFragment(), PostViewContract {
     companion object {
         const val TAG = "PostFragment"
 
+        private const val DEFAULT_SCROLL_POSITION = 0
         private const val POST_SCROLL_STATE = "post_scroll_state"
     }
 
@@ -33,9 +36,10 @@ class PostFragment : BaseFragment(), PostViewContract {
     override lateinit var refreshIndicator: SwipeRefreshLayout
 
     private lateinit var postPresenter: PostPresenterContract
+    private lateinit var postViewCache: PostViewCache
     private val commentsAdapter = CommentsAdapter()
 
-    private var postScrollState: Int = 0
+    private var postScrollState: Int = DEFAULT_SCROLL_POSITION
 
     /**
      * Set this fragment's presenter.
@@ -46,6 +50,7 @@ class PostFragment : BaseFragment(), PostViewContract {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initialiseCache()
         initialiseViews()
         fetchData()
     }
@@ -66,6 +71,11 @@ class PostFragment : BaseFragment(), PostViewContract {
     }
 
     override fun onPostReceived(postViewModel: PostViewModel) {
+        populatePost(postViewModel)
+        cachePostModel(postViewModel)
+    }
+
+    private fun populatePost(postViewModel: PostViewModel) {
         stopLoadingIndicator()
         feed_item_profile_image.loadAvatar(postViewModel.userEmail)
         feed_item_profile_name.text = postViewModel.postAuthor
@@ -75,6 +85,11 @@ class PostFragment : BaseFragment(), PostViewContract {
     }
 
     override fun onCommentsReceived(commentViewModels: List<CommentViewModel>) {
+        populateComments(commentViewModels)
+        cacheCommentModels(commentViewModels)
+    }
+
+    private fun populateComments(commentViewModels: List<CommentViewModel>) {
         stopLoadingIndicator()
         post_comments_header.setVisible()
         post_comments_header.text = getString(R.string.post_comments_header, commentViewModels.size)
@@ -95,18 +110,34 @@ class PostFragment : BaseFragment(), PostViewContract {
     }
 
     private fun fetchData() {
-        postPresenter.fetchPost()
-        postPresenter.fetchComments()
+        if (postViewCache.hasPostData()) populatePost(postViewCache.getPost()!!)
+        else postPresenter.fetchPost()
+
+        if (postViewCache.hasCommentsData()) populateComments(postViewCache.getComments()!!)
+        else postPresenter.fetchComments()
     }
 
     private fun scrollToSavedPosition() {
         post_root_scrollview.scrollY = postScrollState
+        postScrollState = DEFAULT_SCROLL_POSITION
     }
 
     private fun initialiseViews() {
         removeMaxLineLimits()
         initSwipeRefresh()
         initRecyclerView()
+    }
+
+    private fun initialiseCache() {
+        postViewCache = ViewModelProviders.of(this).get(PostViewCache::class.java)
+    }
+
+    private fun cachePostModel(postViewModel: PostViewModel) {
+        postViewCache.cachePost(postViewModel)
+    }
+
+    private fun cacheCommentModels(commentViewModels: List<CommentViewModel>) {
+        postViewCache.cacheComments(commentViewModels)
     }
 
     private fun initSwipeRefresh() {

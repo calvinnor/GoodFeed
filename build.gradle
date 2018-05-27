@@ -2,11 +2,13 @@
 
 buildscript {
 
+    // Dependency Management - Versions
     ext.kotlin_version = '1.2.30'
     ext.supportLibraryVersion = '27.1.1'
     ext.retrofitVersion = '2.4.0'
     ext.daggerVersion = '2.15'
     ext.roomVersion = '1.1.0'
+    ext.viewModelVersion = '1.1.1'
     ext.circleImageViewVersion = '2.2.0'
     ext.eventBusVersion = '3.1.1'
     ext.mockitoVersion = '2.8.9'
