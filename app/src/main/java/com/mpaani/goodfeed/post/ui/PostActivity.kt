@@ -3,6 +3,7 @@ package com.mpaani.goodfeed.post.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import com.mpaani.goodfeed.R
 import com.mpaani.goodfeed.core.ui.BaseActivity
 import com.mpaani.goodfeed.core.ui.BaseFragment
@@ -56,25 +57,29 @@ class PostActivity : BaseActivity() {
         val postFragment = fragment as PostFragment
 
         val arguments = getIntentExtras()
-
         val postPresenter = PostPresenter(postFragment, arguments.getInt(ARGS_POST_ID), arguments.getString(ARGS_USER_EMAIL))
         postFragment.setPostPresenter(postPresenter)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // showBackOnToolbar()
+        showBackOnToolbar()
     }
 
     private fun showBackOnToolbar() {
-        supportActionBar?.let {
-            it.setDisplayHomeAsUpEnabled(true)
-            it.setDisplayShowHomeEnabled(true)
-        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    private fun getIntentExtras() = (intent.extras
-            ?: throw RuntimeException("Must pass bundle with postId, userName and userEmail"))
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun getIntentExtras() = intent.extras
+            ?: throw RuntimeException("Must pass bundle with postId, userName and userEmail")
 
     override fun getToolbarTitle(): String {
         val arguments = getIntentExtras()

@@ -34,8 +34,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        if (menuLayout == NO_LAYOUT) return false
-        menuInflater.inflate(menuLayout, menu)
+        if (menuLayout != NO_LAYOUT) menuInflater.inflate(menuLayout, menu)
         return true
     }
 
